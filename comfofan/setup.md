@@ -151,8 +151,6 @@ button:
         lambda: |-
           id(${name}_fan).setSpeed(4, 60);
 
-
-
 # Enable logging
 logger:
 
@@ -173,4 +171,4 @@ wifi:
 Flashing this to the ESP32 using the Update button in the ESPHome add-on will make the board ready to pair.
 
 # Pairing
-To put the ComfoFan S in pairing mode, you will need to power it off first. Once you restart the device, it will spend some time looking for devices that wish to pair to it. It may be necessary to simultaneously reboot the ESP32 for succesful pairing. The '''mech-remote.yaml''' above creates some buttons you can use to test whether you've succesfully paired the ESP32/NRF905 with the mechanical fan.
+To put the ComfoFan S in pairing mode, you will need to power it off first. Once you restart the device, it will spend some time looking for devices that wish to pair to it. It may be necessary to simultaneously reboot the ESP32 for succesful pairing. The ```mech-remote.yaml``` above creates some buttons you can use to test whether you've succesfully paired the ESP32/NRF905 with the mechanical fan.
