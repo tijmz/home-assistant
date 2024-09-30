@@ -1,0 +1,101 @@
+esp32:
+  board: denky32
+  framework:
+    type: arduino
+
+substitutions:
+  name: mechanische_ventilatie
+  friendly_name: Mechanische ventilatie
+  static_ip: !secret mechanische_ventilatie_static_ip
+  version: v0.5
+
+esphome:
+  name: ${name}
+  friendly_name: ${friendly_name}
+  project:
+    name: tijms.${friendly_name}
+    version: ${version}
+
+
+external_components:
+  - source:
+      type: git
+      url: https://github.com/golles/ESPHome-Config
+      ref: main
+    components: all
+      
+
+api:
+  encryption:
+    key: "[insert key]"
+  services:
+    - service: set_speed_timer
+      variables:
+        speed: int
+        timer: int
+      then:
+        - lambda: |-
+            id(${name}_fan).setSpeed(speed, timer);
+
+spi:
+  clk_pin: GPIO14
+  mosi_pin: GPIO13
+  miso_pin: GPIO12
+
+nrf905:
+  id: nrf905_rf
+  cs_pin: GPIO15
+  am_pin: GPIO32
+  cd_pin: GPIO33
+  ce_pin: GPIO27
+  dr_pin: GPIO35
+  pwr_pin: GPIO26
+  txen_pin: GPIO25
+
+fan:
+  - platform: zehnder
+    id: ${name}_fan
+    name: Ventilatie
+    nrf905: nrf905_rf
+    update_interval: 10s
+
+button:
+  - platform: template
+    id: ${name}_high_15
+    name: 15 minuten hoog
+    on_press:
+      then:
+        lambda: |-
+          id(${name}_fan).setSpeed(4, 15);
+
+  - platform: template
+    id: ${name}_high_30
+    name: 30 minuten hoog
+    on_press:
+      then:
+        lambda: |-
+          id(${name}_fan).setSpeed(4, 30);
+
+  - platform: template
+    id: ${name}_high_60
+    name: 60 minuten hoog
+    on_press:
+      then:
+        lambda: |-
+          id(${name}_fan).setSpeed(4, 60);
+
+# Enable logging
+logger:
+
+ota:
+  - platform: esphome
+    password: "[insert password]"
+
+wifi:
+  ssid: !secret wifi_ssid
+  password: !secret wifi_password
+
+  # Enable fallback hotspot (captive portal) in case wifi connection fails
+  ap:
+    ssid: "Mechfan-Remote Fallback Hotspot"
+    password: "[insert password]"
