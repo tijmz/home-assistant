@@ -8,6 +8,8 @@ My home was equipped with a ComfoFan S mechanical ventilator that pulls air from
 
 So I went for the slightly more complicated route to build a HA-connected remote that could exist in parallel to the existing remote. For this, I leaned on the work done by [@golles](https://github.com/golles/ESPHome-Config/blob/main/docs/MECHANISCHE_VENTILATIE.md), [@Sanderhuisman](https://github.com/Sanderhuisman/ESPHome-Zehnder-RF) and [JBSweb](https://www.jbswebcom.nl/knutselen/index.php?view=article&id=32:zehnder-comfofan-silent-aansturen-met-home-assistant-via-wemos-d1-met-nrf905-en-esphome&catid=2), which made the job pretty easy.
 
+This is a writeup of how I went about. I will not update any of the code snippets here, but this repo also contains up-to-date YAML files.
+
 # Preparation
 
 The first thing you need to build this is the components and proper setup in HA. I used the following:
@@ -22,7 +24,7 @@ The first thing you need to build this is the components and proper setup in HA.
 ## Software
 
 - HA installation
-- ESPHome add-on in HA
+- ESPHome add-on in HA (version for this writeup: 2024.7
 
 # Building
 
@@ -172,3 +174,30 @@ Flashing this to the ESP32 using the Update button in the ESPHome add-on will ma
 
 # Pairing
 To put the ComfoFan S in pairing mode, you will need to power it off first. Once you restart the device, it will spend some time looking for devices that wish to pair to it. It may be necessary to simultaneously reboot the ESP32 for succesful pairing. The ```mech-remote.yaml``` above creates some buttons you can use to test whether you've succesfully paired the ESP32/NRF905 with the mechanical fan.
+
+# Automations
+Once you have the board and fan paired, it is automation time! This is how I went about mine.
+
+## Bathroom humidity
+If someone takes a shower or a bath, I want the fan to kick in. First thing I did was monitor a humidity sensor in the bathroom. The type I used was Sonoff SNZB-02P. Within Home Assistant, I created a Helper, a derivative sensor ```sensor.bathroom.humidity```. What it did was take the derivative of the humidity sensor with respect to time, so that I could measure change in humidity. The reason this is important is because the basline for humidity shifts all the time and you only want to capture sudden spikes using your fan (sucking in air if it's just humid outside is not helpful).
+
+I monitored the response of the derivative sensor to a couple of showers and baths, as well as other uses (using the sink, drying laundry). The spikes of showers and baths were pretty clear as they led to humidity increases of more than 0.15 %/s. So this would be the target value for my automation ```bathroom-fan-activation```:
+
+```yaml
+alias: Bathroom Fan Activation
+description: Turns on fan if delta humidity reaches threshold
+trigger:
+  - platform: numeric_state
+    entity_id:
+      - sensor.bathroom_humidity
+    above: 0.15
+condition: []
+action:
+  - action: esphome.mechanische_ventilatie_set_speed_timer
+    metadata: {}
+    data:
+      speed: 3
+      timer: 30
+mode: single
+```
+
