@@ -1,0 +1,15 @@
+alias: Bathroom Fan Activation
+description: Turns on fan if delta humidity reaches threshold
+trigger:
+  - platform: numeric_state
+    entity_id:
+      - sensor.bathroom_humidity
+    above: 0.15
+condition: []
+action:
+  - action: esphome.mechanische_ventilatie_set_speed_timer
+    metadata: {}
+    data:
+      speed: 3
+      timer: 30
+mode: single
