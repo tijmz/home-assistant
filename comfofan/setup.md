@@ -62,7 +62,7 @@ mechanische_ventilatie_ota_password: ["password"]
 mechanische_ventilatie_static_ip: [192.168.1.132]
 mechanische_ventilatie_encryption_key: ["key"]
 ```
-Then for my device I added '''mechfan-remote.yaml''' with the following content, again very much on the basis of the work of @golles. Note that I include external components from his Github repository, as he has been maintaining the code that allows the ESP32 and NRF905 to communicate properly with the fan. One thing I did not get right in the beginning was to properly set the board type. For the ESP32-WROOM-32 that is dinky32. Please also be aware the configuration requires keys/passwords that you should have obtained while setting up ESPHome.
+Then for my device I added ```mechfan-remote.yaml``` with the following content, again very much on the basis of the work of @golles. Note that I include external components from his Github repository, as he has been maintaining the code that allows the ESP32 and NRF905 to communicate properly with the fan. One thing I did not get right in the beginning was to properly set the board type. For the ESP32-WROOM-32 that is dinky32. Please also be aware the configuration requires keys/passwords that you should have obtained while setting up ESPHome.
 
 ``` yaml
 esp32:
