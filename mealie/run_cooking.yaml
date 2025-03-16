@@ -4,7 +4,7 @@ description: Runs script for kitchen if toggle activates cooking
 triggers:
   - trigger: state
     entity_id:
-      - input_boolean.koken
+      - input_boolean.cooking
     from: "off"
     to: "on"
 conditions: []
