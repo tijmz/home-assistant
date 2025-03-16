@@ -1,5 +1,5 @@
 # automation to run script if boolean is True
-alias: run_kooktijd
+alias: run_cooking
 description: Runs script for kitchen if toggle activates cooking
 triggers:
   - trigger: state
