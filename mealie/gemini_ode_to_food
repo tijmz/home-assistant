@@ -1,0 +1,19 @@
+sequence:
+  - action: google_generative_ai_conversation.generate_content
+    metadata: {}
+    data:
+      prompt: |-
+        write an ode to the meal {{states('sensor.meal_of_the_day')}} described as
+         {{states('sensor.meal_description')}}. Do not use markdown.
+    response_variable: gemini_content
+  - action: tts.speak
+    metadata: {}
+    data:
+      cache: false
+      media_player_entity_id: media_player.woonkamer_speaker
+      message: "{{ gemini_content.text }}"
+      language: nl
+    target:
+      entity_id: tts.google_en_com
+alias: gemini_ode_to_food
+description: ""
