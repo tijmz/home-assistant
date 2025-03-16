@@ -1,0 +1,19 @@
+# Adding custom sensors for Mealie
+rest:
+  - resource: "<mealie installation"/api/households/mealplans/today"
+    method: GET
+    headers:
+      Authorization: !secret mealie_bearer # api key defined in secrets.yaml
+    scan_interval: 60
+    sensor:
+      - name: "Meal of the day"
+        value_template: "{{ value_json[0]['recipe']['name'] }}"
+        force_update: true
+        unique_id: mealie_todays_meal
+      - name: Meal of the day ID
+        value_template: "{{ value_json[0]['recipe']['id'] }}"
+        force_update: true
+        unique_id: mealie_todays_meal_id
+      - name: Meal description
+        value_template: "{{ value_json[0]['recipe']['description'] }}"
+        unique_id: mealie_today_desc
