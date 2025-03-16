@@ -22,7 +22,7 @@ Once you have the REST sensor, you can easily display an image of the meal of th
 {% endif %}
 ```
 ## Cooking automation
-I created a helper (Toggle/boolean) to track whether I am cooking or not, which I inserted on my dashboard as a toggle. If toggle is set to On, the automation ``run_cooking.yaml`` activates a script called ``script_cooking``. This script does several things:
+I created a helper (Toggle/boolean) to track whether I am cooking or not, which I inserted on my dashboard as a toggle. If toggle is set to On, the automation ``run_cooking.yaml`` activates a script called ``script_cooking.yaml``. This script does several things:
 1. It increases the speed of the comfo fan.
 2. It plays music on kitchen speaker.
 3. It waits for the Toggle to be turned off.
@@ -30,4 +30,4 @@ I created a helper (Toggle/boolean) to track whether I am cooking or not, which 
 5. It reset the speed of the comfo fan to normal
 
 ## Ode to cooking
-I have one more script, which plays an ode to the meal via speaker if activated. For this I use the Google Gemini integration. This is ``gemini_ode_to_food``.
+I have one more script, which plays an ode to the meal via speaker if activated. For this I use the Google Gemini integration. This is ``gemini_ode_to_food.yaml``.
