@@ -5,7 +5,7 @@ sequence:
       percentage: 75
     target:
       entity_id: fan.mechanische_ventilatie_ventilatie
-  - action: music_assistant.play_media #then kitchen speaker starts playing music
+  - action: music_assistant.play_media #then kitchen speaker starts playing music (using Music Assistant https://www.music-assistant.io/)
     metadata: {}
     data:
       media_type: playlist
