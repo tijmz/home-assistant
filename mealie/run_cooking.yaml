@@ -1,0 +1,17 @@
+# automation to run script if boolean is True
+alias: run_kooktijd
+description: Runs script for kitchen if toggle activates cooking
+triggers:
+  - trigger: state
+    entity_id:
+      - input_boolean.koken
+    from: "off"
+    to: "on"
+conditions: []
+actions:
+  - action: script.turn_on
+    metadata: {}
+    data: {}
+    target:
+      entity_id: script.cooking
+mode: single
