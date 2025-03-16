@@ -17,7 +17,7 @@ sequence:
   - wait_for_trigger: # then the script waits whether the cooking boolean is turned off
       - trigger: state
         entity_id:
-          - input_boolean.koken
+          - input_boolean.cooking
         from: "on"
         to: "off"
     continue_on_timeout: false
