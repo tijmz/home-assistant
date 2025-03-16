@@ -1,0 +1,42 @@
+sequence:
+  - action: fan.set_percentage #first the comfo fan is turned up
+    metadata: {}
+    data:
+      percentage: 75
+    target:
+      entity_id: fan.mechanische_ventilatie_ventilatie
+  - action: music_assistant.play_media #then kitchen speaker starts playing music
+    metadata: {}
+    data:
+      media_type: playlist
+      media_id: My Supermix
+    target:
+      device_id:
+        - 0d13087ea8f24882635dade9fd767a0a
+        - 6f98e85259a303206dc9f643baa51def
+  - wait_for_trigger: # then the script waits whether the cooking boolean is turned off
+      - trigger: state
+        entity_id:
+          - input_boolean.koken
+        from: "on"
+        to: "off"
+    continue_on_timeout: false
+  - action: tts.speak #if turned off, living room speaker announces details about the meal of the day
+    metadata: {}
+    data:
+      cache: false
+      media_player_entity_id: media_player.woonkamer_speaker
+      message: >-
+        Dinner is ready! We will be eating {{states('sensor.meal_of_the_day')}}. 
+        {{states('sensor.meal_description')}}
+    target:
+      entity_id: tts.home_assistant_cloud
+  - action: fan.set_percentage # then the fan in the kitchen is turned down again
+    metadata: {}
+    data:
+      percentage: 25
+    target:
+      entity_id: fan.mechanische_ventilatie_ventilatie
+alias: script_cooking
+description: ""
+icon: mdi:chef-hat
