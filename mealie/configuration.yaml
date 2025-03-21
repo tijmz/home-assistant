@@ -1,6 +1,6 @@
 # Adding custom sensors for Mealie
 rest:
-  - resource: "<mealie installation"/api/households/mealplans/today"
+  - resource: "<mealie installation">/api/households/mealplans/today"
     method: GET
     headers:
       Authorization: !secret mealie_bearer # api key defined in secrets.yaml
@@ -17,3 +17,20 @@ rest:
       - name: Meal description
         value_template: "{{ value_json[0]['recipe']['description'] }}"
         unique_id: mealie_today_desc
+  - resource: "<mealie installation>"/api/households/mealplans?orderBy=date&orderDirection=asc"
+    method: GET
+    headers:
+     Authorization: !secret mealie_bearer
+    scan_interval: 60
+    params:
+      start_date: >
+       {{ now().strftime('%Y-%m-%d') }}
+      end_date: >
+       {{(as_timestamp(now())+ (172800)) | timestamp_custom("%Y-%m-%d",true)}}
+    sensor:
+     - name: "Mealie tomorrow name"
+       value_template: "{{ value_json['items'][1].recipe.name }}"
+       force_update: true
+     - name: "Mealie tomorrow description"
+       value_template: "{{ value_json['items'][1].recipe.description }}"
+       force_update: true
