@@ -5,6 +5,9 @@ I added the meal planner Mealie as an add-on to my Home Assistant installation. 
 ## Exposing meal of the day
 Using a REST sensor, data from Mealie can be put to use in Home Assistant. To do so, add the contents of ``configuration.yaml`` listed here to the corresponding file in your Home Assistant installation. Make sure to add the proper path to your Mealie installation and include your API key.
 
+## Exposing meal tomorrow
+Another REST sensor scans for tomorrow's meal. This is done by calling the API for a list from the mealplan, using parameters ``start_date`` and ``end_date`` to select the relevant time slice. Note that to include tomorrow's meal, ``end_date`` needs to be two days from now.
+
 ## Generating a card that shows the meal of the day
 Once you have the REST sensor, you can easily display an image of the meal of the day. I used templating in a header card that contained the following:
 
