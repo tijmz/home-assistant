@@ -1,0 +1,11 @@
+alias: run_peptalk
+description: ""
+triggers:
+  - trigger: time
+    at: "07:30:00"
+conditions: []
+actions:
+  - action: script.peptalk
+    metadata: {}
+    data: {}
+mode: single
