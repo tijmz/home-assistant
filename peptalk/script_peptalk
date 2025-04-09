@@ -1,0 +1,27 @@
+sequence:
+  - action: calendar.get_events
+    metadata: {}
+    data:
+      duration:
+        hours: 12
+        minutes: 0
+        seconds: 0
+    target:
+      entity_id: calendar.due_today
+    response_variable: open_calitems
+  - action: google_generative_ai_conversation.generate_content
+    metadata: {}
+    data:
+      prompt: >-
+        Items in "{{ open_calitems }}" are tasks that need to be done. Give me a funny peptalk on the basis of these items. Do not use markdown or sections.
+    response_variable: peptalk
+  - action: tts.speak
+    metadata: {}
+    data:
+      cache: false
+      media_player_entity_id: media_player.nesthub8381
+      message: "{{ peptalk.text }}"
+    target:
+      entity_id: tts.home_assistant_cloud
+alias: script_peptalk
+description: Provides a peptalk on open Todoist items
