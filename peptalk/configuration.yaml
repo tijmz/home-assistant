@@ -1,0 +1,7 @@
+# Setting up custom project for Todoist
+calendar:
+  - platform: todoist
+    token: !secret todoist_api #api key stored in secrets.yaml
+    custom_projects:
+      - name: 'Due Today'
+        due_date_days: 0
