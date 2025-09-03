@@ -1,5 +1,5 @@
 # Introduction
-This is a script I made for my daughter and which she can call via a voice command. I adapted it to make use of Home Assistant's AI Task action, rather than directly calling a specific LLM. What the script does is bring in the weather forecast, recombine it with a list of items (available clothing) and then provide clothing advice for the day.
+``clothing_advice.yaml`` is a script I made for my daughter and which she can call via a voice command. I adapted it to make use of Home Assistant's AI Task action, rather than directly calling a specific LLM. What the script does is bring in the weather forecast, recombine it with a list of items (available clothing) and then provide clothing advice for the day.
 
 I left out a lot of concrete particulars here, to respect my daughter's privacy. One thing to note is that the script works better if a) there are plenty of items to choose from and b) the items are listed as descriptively as possible.
 
