@@ -1,0 +1,60 @@
+sequence:
+  - action: weather.get_forecasts
+    metadata: {}
+    data:
+      type: daily
+    response_variable: my_forecast
+    target:
+      entity_id: weather.forecast_home
+  - action: ai_task.generate_data
+    metadata: {}
+    data:
+      task_name: Suggest weather-appropriate clothing
+      instructions: >-
+        <name> is <personal info such as gender and age>. Provide a weather forecast on the basis of the below data. Then provide <name> with clothing advice that fits with the forecast and makes use of items on the list found below.
+
+        Temparature is {{
+        my_forecast['weather.forecast_home'].forecast[0].temperature }} degrees
+        Celsius.
+
+        Rainfall is {{
+        my_forecast['weather.forecast_home'].forecast[0].precipitation }} mm
+
+        General description is {{
+        my_forecast['weather.forecast_home'].forecast[0].condition }}
+
+
+
+        Possible clothing # List descriptive items here, be mindful of attractors (e.g. calling something summer clothes will likely be picked if weather is sunny)
+        - <item number one>
+        - <item number two>
+        - <etc>
+
+      structure: # Structuring the output is not necessary for this application, but could be used to forward part of the generated data elsewhere
+        weather_today:
+          description: A summary of the weather forecast
+          required: true
+          selector:
+            text: null
+        clothing_advice:
+          description: Clothing advice for <name>
+          required: true
+          selector:
+            text: null
+    response_variable: weather_clothing
+  - action: media_player.volume_set
+    metadata: {}
+    data:
+      volume_level: 0.05 # Calibrate this on the basis of your speaker behaviour
+    target:
+      device_id: <your speaker id> # Pick the proper device for playback
+  - action: tts.cloud_say
+    metadata: {}
+    data:
+      cache: false
+      message: |-
+        {{ weather_clothing.data.weather_today }}
+        {{ weather_clothing.data.clothing_advice }}
+      entity_id: <your preferred speaker>
+alias: "Clothing advice (AI Task)"
+description: "Use the AI Task action to identify good clothes for today's weather"
