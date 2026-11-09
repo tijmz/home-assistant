@@ -1,0 +1,70 @@
+alias: "Pumpkin: presence says who is there"
+description: >-
+  When the presence sensor on the Pompoen Echo sees someone, the pumpkin plays
+  one of twenty pregenerated Dutch lines (ElevenLabs, cached by Home Assistant)
+  and switches on the candle strip light_delay seconds later, in parallel, so
+  the light lines up with the first audible word. Only runs between the times
+  set in the two input_datetime helpers.
+mode: single
+max_exceeded: silent
+triggers:
+  - trigger: occupancy.detected
+    target:
+      entity_id: binary_sensor.pompoen_echo_aanwezigheid
+conditions:
+  - condition: time
+    after: input_datetime.pompoen_actief_vanaf
+    before: input_datetime.pompoen_actief_tot
+variables:
+  speaker: media_player.woonkamer_speaker
+  speaker_volume: 0.35
+  light_delay: 3
+  tts_engine: tts.elevenlabs
+  tts_language: nl
+  tts_voice: YOUR_ELEVENLABS_VOICE_ID
+  lines:
+    - "Ik vervloek je: voor eeuwig natte sokken! En jij wekt mij zomaar uit mijn pompoenslaap? Brutaal."
+    - "Wee de sterveling die mij stoort! Mijn vloek: eeuwig een kriebel op je neus. Ik lag net zo lekker te slapen."
+    - "Mijn vloek valt over jou: elke pen die je pakt verdwijnt! Moest je me nu echt wakker maken?"
+    - "Hoor mijn waarschuwing: wie de pompoen wekt, verliest een sok! Eentje maar, maar altijd de mooiste. Ik wil slapen."
+    - "Ik zal je achtervolgen tot aan het einde der tijden! Of tot ik weer in slaap val. Wat moet je van me?"
+    - "Ik beloof je een eeuwigheid vol hik! Hik, hik, hik! Laat een pompoen toch slapen, zeg."
+    - "Ik vervloek je met een liedje dat nooit meer uit je hoofd gaat! En jij durft mij te wekken? Wat een lef."
+    - "Wie mij stoort, krijgt voor altijd een knoop in zijn veters! Ik lag net zo heerlijk te dromen, weet je dat?"
+    - "Pas op! Mijn wraak is groot: je koffie wordt voor eeuwig koud. Ik was net lekker in slaap gevallen."
+    - "Ik laat je voor altijd verdwalen in je eigen huis! Nou ja, een beetje. Laat een pompoen toch met rust."
+    - "Ik vervloek je: al je wekkers lopen voor altijd vijf minuten voor! En ik was net zo lekker aan het slapen."
+    - "Hoor mijn vloek: elke keer dat je gaat zitten, moet je weer opstaan! Waarom wek je me nu?"
+    - "Wie mij stoort, vindt voor eeuwig een kruimel in zijn bed! Ik wilde slapen, weet je dat?"
+    - "Ik vervloek je met een eindeloze rij rode stoplichten! En dat allemaal omdat jij mij wakker maakt."
+    - "Pas op, sterveling! Voor altijd zit er een propje papier in je schoen. Laat me nou gewoon slapen."
+    - "Mijn vloek: je wifi valt uit precies als het spannend wordt! Ik droomde zo mooi, en jij verpest het."
+    - "Ik laat al je sleutels voortaan in de laatste zak zitten waar je kijkt! Dat krijg je ervan."
+    - "Hoor mijn dreigement: elke boterham valt voortaan met de jam naar beneden! Ik lag zo lekker te dromen."
+    - "Ik vervloek je met een deur die altijd net te hard dichtslaat! En jij durft mij te wekken? Wat een brutaliteit."
+    - "Mijn wraak is groot: het laatste koekje is voortaan altijd op! Laat me nu maar slapen."
+actions:
+  - variables:
+      line: "{{ lines | random }}"
+  - action: media_player.volume_set
+    target:
+      entity_id: "{{ speaker }}"
+    data:
+      volume_level: "{{ speaker_volume }}"
+  - parallel:
+      - action: media_player.play_media
+        target:
+          entity_id: "{{ speaker }}"
+        data:
+          media_content_type: music
+          media_content_id: "media-source://tts/{{ tts_engine }}?message={{ line | urlencode }}&language={{ tts_language }}&voice={{ tts_voice }}"
+      - sequence:
+          - delay: "{{ light_delay }}"
+          - action: light.turn_on
+            target:
+              entity_id: light.pompoen_echo_pompoen_strip
+            data:
+              brightness: 80
+              effect: Kaars
+              rgb_color: [255, 100, 0]
+  - delay: "00:01:00"

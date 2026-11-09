@@ -1,0 +1,12 @@
+alias: "Pumpkin: strip off when presence clears"
+mode: restart
+triggers:
+  - trigger: occupancy.cleared
+    target:
+      entity_id: binary_sensor.pompoen_echo_aanwezigheid
+    options:
+      for: "00:00:10"
+actions:
+  - action: light.turn_off
+    target:
+      entity_id: light.pompoen_echo_pompoen_strip

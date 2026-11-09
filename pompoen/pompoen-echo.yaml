@@ -1,0 +1,95 @@
+esphome:
+  name: pompoen-echo
+  friendly_name: Pompoen Echo
+
+esp32:
+  board: m5stack-atom
+  cpu_frequency: 240MHz
+  framework:
+    type: esp-idf
+
+logger:
+
+api:
+
+ota:
+  - platform: esphome
+
+wifi:
+  # Two networks: the Echo picks the strongest one it sees.
+  # Add wifi_ssid_2 and wifi_password_2 to secrets.yaml.
+  networks:
+    - ssid: !secret wifi_ssid
+      password: !secret wifi_password
+    - ssid: !secret wifi_ssid_2
+      password: !secret wifi_password_2
+  ap:
+    ssid: "Pompoen Echo Fallback"
+    password: "choose-a-password"
+
+captive_portal:
+
+# No i2s_audio / speaker / media_player: the built-in speaker is disabled.
+# The voice plays on an external speaker in Home Assistant.
+
+light:
+  # Built-in RGB LED of the Atom Echo (SK6812 on G27)
+  - platform: esp32_rmt_led_strip
+    name: "Onboard LED"
+    id: onboard_led
+    pin: GPIO27
+    num_leds: 1
+    chipset: SK6812
+    rgb_order: GRB
+    default_transition_length: 0s
+
+  # LED strip: data wire (via 330 ohm resistor) on G21
+  - platform: esp32_rmt_led_strip
+    name: "Pompoen strip"
+    id: pompoen_strip
+    pin: GPIO21
+    num_leds: 55          # all 55 pixels; baking paper works as a diffuser
+    chipset: WS2812
+    rgb_order: GRB
+    default_transition_length: 0s
+    restore_mode: ALWAYS_OFF
+    effects:
+      - addressable_flicker:
+          name: "Kaars"
+          intensity: 30%
+          update_interval: 60ms
+      - pulse:
+          name: "Langzame pulse"
+          transition_length: 1.5s
+          update_interval: 1.5s
+      - addressable_scan:
+          name: "Scan"
+          move_interval: 80ms
+          scan_width: 2
+
+binary_sensor:
+  # Button on top (G39)
+  - platform: gpio
+    name: "Knop"
+    pin:
+      number: GPIO39
+      inverted: true
+
+  # LD2410C presence, OUT pin on G25 (high = someone present, also when standing still)
+  - platform: gpio
+    name: "Aanwezigheid"
+    id: presence
+    device_class: occupancy
+    pin:
+      number: GPIO25
+    filters:
+      - delayed_off: 3s
+
+# Diagnostics: wifi signal strength (dBm) and uptime
+sensor:
+  - platform: wifi_signal
+    name: "WiFi signaal"
+    update_interval: 30s
+  - platform: uptime
+    name: "Uptime"
+    update_interval: 60s
